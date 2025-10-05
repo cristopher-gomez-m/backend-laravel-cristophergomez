@@ -118,7 +118,7 @@ WT_SECRET=aR0HqKy0CpXsOhSqFw96w4vsssKZKtCGouyTn4YFqOBAEuuOLqK0dFvdIKXUiQFJ
 ```bash
 # Clonar el repositorio
 git clone https://github.com/cristopher-gomez-m/backend-laravel-cristophergomez
-cd backend-laravel
+cd backend-laravel-cristophergomez
 
 # Instalar dependencias
 composer install
