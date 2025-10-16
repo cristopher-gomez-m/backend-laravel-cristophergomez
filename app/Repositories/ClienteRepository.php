@@ -42,8 +42,8 @@ class ClienteRepository
         // No hay campos de auditoría, solo se guarda la persona
         return Person::create([
             'document' => $input['document'],
-            'first_name' => $input['first_name'],
-            'last_name' => $input['last_name'],
+            'first_name' => $input['first_name'] ?? null,
+            'last_name' => $input['last_name'] ?? null,
             'address' => $input['address'] ?? null,
             'phone' => $input['phone'] ?? null,
             'email' => $input['email'] ?? null,
