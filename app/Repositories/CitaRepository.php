@@ -11,8 +11,11 @@ class CitaRepository
 {
     public function getAll($per_page, array $filters = [])
     {
-        $query = Cita::where('status', 'A')
-            ->with(['cliente', 'detalles']);
+        $query = Cita::with(['cliente', 'detalles']);
+
+        if (isset($filters['cliente_id'])) {
+            $query->where('cliente_id', $filters['cliente_id']);
+        }
 
         $citas = $query->paginate($per_page)->toArray();
         return $citas;
@@ -122,5 +125,24 @@ class CitaRepository
         ]);
 
         return $cita;
+    }
+
+    public function reporteCitaCliente()
+    {
+        $citas = Cita::with([
+            'cliente'
+        ])->get();
+
+        return $citas;
+    }
+
+    public function reporteCitaAtencion()
+    {
+        $citas = Cita::with([
+            'cliente',
+            'detalles.atencion'
+        ])->get();
+
+        return $citas;
     }
 }

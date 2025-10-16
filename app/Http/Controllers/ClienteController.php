@@ -92,10 +92,61 @@ class ClienteController extends Controller
         try {
             $usuario_id = (int) $request->input('usuario_id');
 
-            $this->service->delete($id,$usuario_id);
+            $this->service->delete($id, $usuario_id);
             $apiResponse = new ApiResponse([]);
             $apiResponse->message = 'Cliente eliminado correctamente';
             return response()->json($apiResponse);
+        } catch (Exception $e) {
+            $apiResponse = new ApiResponse([]);
+            $apiResponse->message = $e->getMessage();
+            $apiResponse->statusCode = 500;
+            return response()->json($apiResponse, $apiResponse->statusCode);
+        }
+    }
+
+    public function reporteClientesAtenciones()
+    {
+        try {
+            $data = $this->service->reporteClientesAtenciones();
+            return response()->json(new ApiResponse($data));
+        } catch (Exception $e) {
+            $apiResponse = new ApiResponse([]);
+            $apiResponse->message = $e->getMessage();
+            $apiResponse->statusCode = 500;
+            return response()->json($apiResponse, $apiResponse->statusCode);
+        }
+    }
+
+    public function getClientesCitasTotales()
+    {
+        try {
+            $data = $this->service->getClientesCitasTotales();
+            return response()->json(new ApiResponse($data));
+        } catch (Exception $e) {
+            $apiResponse = new ApiResponse([]);
+            $apiResponse->message = $e->getMessage();
+            $apiResponse->statusCode = 500;
+            return response()->json($apiResponse, $apiResponse->statusCode);
+        }
+    }
+
+    public function reporteClientesAtencionesPDF()
+    {
+        try {
+            return $this->service->reporteClientesAtencionesPDF();
+
+        } catch (Exception $e) {
+            $apiResponse = new ApiResponse([]);
+            $apiResponse->message = $e->getMessage();
+            $apiResponse->statusCode = 500;
+            return response()->json($apiResponse, $apiResponse->statusCode);
+        }
+    }
+    public function reporteClienteCitasTotalesPDF()
+    {
+        try {
+            return $this->service->reporteClienteCitasTotalesPDF();
+
         } catch (Exception $e) {
             $apiResponse = new ApiResponse([]);
             $apiResponse->message = $e->getMessage();

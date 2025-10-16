@@ -2,8 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Cliente;
-use Carbon\Carbon;
+use App\Models\Person;
 use Exception;
 
 class ClienteRepository
@@ -11,17 +10,18 @@ class ClienteRepository
     public function getAll($per_page, array $filters = [])
     {
         try {
-            $query = Cliente::where('status', 'A');
+            $query = Person::query();
 
             if (isset($filters['q']) && $filters['q'] !== '') {
                 $q = $filters['q'];
                 $query->where(function ($query) use ($q) {
-                    $query->where('nombres', 'ilike', "%$q%");
+                    $query->where('first_name', 'like', "%$q%")
+                        ->orWhere('last_name', 'like', "%$q%")
+                        ->orWhere('document', 'like', "%$q%");
                 });
             }
 
-            $clientes = $query->paginate($per_page)->toArray();
-            return $clientes;
+            return $query->paginate($per_page)->toArray();
         } catch (Exception $e) {
             throw $e;
         }
@@ -29,42 +29,73 @@ class ClienteRepository
 
     public function find($id)
     {
-        return Cliente::find($id);
+        return Person::find($id);
+    }
+
+    public function findByDocument($document)
+    {
+        return Person::where('document', $document)->first();
     }
 
     public function store(array $input, $usuario_id)
     {
-        // Agregamos campos de auditoría automáticamente
-        $data = array_merge($input, [
-            'usuario_id' => $usuario_id,
-            'fecha_ingreso' => Carbon::now(),
-            'status' => 'A',
+        // No hay campos de auditoría, solo se guarda la persona
+        return Person::create([
+            'document' => $input['document'],
+            'first_name' => $input['first_name'],
+            'last_name' => $input['last_name'],
+            'address' => $input['address'] ?? null,
+            'phone' => $input['phone'] ?? null,
+            'email' => $input['email'] ?? null,
         ]);
-
-        return Cliente::create($data);
     }
 
-    public function update(Cliente $cliente, array $input, $usuario_modifica_id)
+    public function update(Person $cliente, array $input, $usuario_modifica_id)
     {
-        
-        $data = array_merge($input, [
-            'usuario_modifica_id' => $usuario_modifica_id,
-            'fecha_modifica' => Carbon::now(),
-        ]);
-
-        $cliente->update($data);
-
+        $cliente->update($input);
         return $cliente;
     }
 
-    public function delete(Cliente $cliente, $usuario_elimina_id)
+    public function delete(Person $cliente, $usuario_elimina_id)
     {
-        $cliente->update([
-            'usuario_elimina_id' => $usuario_elimina_id,
-            'fecha_elimina' => Carbon::now(),
-            'status' => 'E',
-        ]);
-
+        // Como no hay "status" ni "fecha_elimina", eliminamos directamente
+        $cliente->delete();
         return $cliente;
+    }
+
+    public function reporteClientesAtenciones()
+    {
+        $data = Person::with(['citas.detalles.atencion'])->get();
+        return $data;
+    }
+
+    public function getClientesCitasTotales()
+    {
+        // Agrupamos por cliente, sumando precios y contando servicios
+        return Person::with(['citas.detalles.atencion'])
+            ->get()
+            ->map(function ($cliente) {
+                $totalServicios = 0;
+                $totalVentas = 0;
+
+                foreach ($cliente->citas as $cita) {
+                    foreach ($cita->detalles as $detalle) {
+                        if ($detalle->atencion) {
+                            $totalServicios++;
+                            $totalVentas += floatval($detalle->atencion->precio);
+                        }
+                    }
+                }
+
+                return [
+                    'id' => $cliente->id,
+                    'document' => $cliente->document,
+                    'first_name' => $cliente->first_name,
+                    'last_name' => $cliente->last_name,
+                    'email' => $cliente->email,
+                    'total_servicios' => $totalServicios,
+                    'total_ventas' => $totalVentas,
+                ];
+            });
     }
 }

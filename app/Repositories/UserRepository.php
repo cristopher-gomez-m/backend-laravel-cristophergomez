@@ -15,14 +15,7 @@ class UserRepository
             $usuario = User::create([
                 'email' => $input['email'],
                 'password' => Hash::make($input['password']),
-                'status' => 'A',
-                'fecha_ingreso' => Carbon::now(),
             ]);
-
-
-            $usuario->usuario_id = $usuario->id;
-            $usuario->save();
-
 
             return $usuario;
 

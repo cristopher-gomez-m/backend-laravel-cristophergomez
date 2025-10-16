@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('cita-detalle', function (Blueprint $table) {
+        Schema::create('cita_detalle', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cita_id')->constrained('citas')->onDelete('cascade');
             $table->foreignId('atencion_id')->constrained('atenciones')->onDelete('cascade');
@@ -31,6 +31,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('cita_atencion');
+        Schema::dropIfExists('cita_detalle');
     }
 };

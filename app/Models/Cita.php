@@ -24,7 +24,7 @@ class Cita extends Model
 
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsTo(Person::class);
     }
 
         public function detalles()

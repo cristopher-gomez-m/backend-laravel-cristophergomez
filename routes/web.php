@@ -14,6 +14,7 @@ Route::get('/', function () {
 
 Route::prefix('api')->group(function () {
     Route::post('/login', [UserController::class, 'login']);
+    Route::post('/loginMovil', [UserController::class, 'loginMovil']);
     Route::post('/register', [UserController::class, 'store']);
 
     /*
@@ -39,5 +40,15 @@ Route::prefix('api')->group(function () {
         Route::post('/atenciones', [AtencionController::class, 'store']);
         Route::put('/atenciones/{id}', [AtencionController::class, 'update']);
         Route::delete('/atenciones/{id}', [AtencionController::class, 'destroy']);
+
+        Route::get('/reporte/citas-clientes', [CitaController::class, 'reporteCitaCliente']);
+        Route::get('/reporte/clientes-atenciones', [ClienteController::class, 'reporteClientesAtenciones']);
+        Route::get('/reporte/citas-atenciones', [CitaController::class, 'reporteCitaAtencion']);
+        Route::get('/reporte/clientes-citas-totales', [ClienteController::class, 'getClientesCitasTotales']);
+
+        Route::get('/reporte-citas/pdf', [CitaController::class, 'pdfCitaCliente']);
+        Route::get('/reporte-clientes-atenciones/pdf', [ClienteController::class, 'reporteClientesAtencionesPDF']);
+        Route::get('/reporte-citas-atenciones/pdf', [CitaController::class, 'pdfCitaAtencion']);
+        Route::get('/reporte-cliente-citas-totales/pdf', [ClienteController::class, 'reporteClienteCitasTotalesPDF']);
     });
 });

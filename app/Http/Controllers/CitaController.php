@@ -92,7 +92,7 @@ class CitaController extends Controller
         try {
             $usuario_id = (int) $request->input('usuario_id');
 
-            $this->service->delete($id,$usuario_id);
+            $this->service->delete($id, $usuario_id);
             $apiResponse = new ApiResponse([]);
             $apiResponse->message = 'Cita eliminada correctamente';
             return response()->json($apiResponse);
@@ -103,4 +103,56 @@ class CitaController extends Controller
             return response()->json($apiResponse, $apiResponse->statusCode);
         }
     }
+
+    public function reporteCitaCliente()
+    {
+        try {
+            $data = $this->service->reporteCitaCliente();
+            $apiResponse = new ApiResponse($data);
+            return response()->json($apiResponse, $apiResponse->statusCode);
+        } catch (Exception $e) {
+            $apiResponse = new ApiResponse([]);
+            $apiResponse->message = $e->getMessage();
+            $apiResponse->statusCode = 500;
+            return response()->json($apiResponse, $apiResponse->statusCode);
+        }
+    }
+
+    public function pdfCitaCliente()
+    {
+        try {
+            return $this->service->pdfCitaCliente();
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function pdfCitaAtencion()
+    {
+        try {
+            return $this->service->reporteCitaAtencionPDF();
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function reporteCitaAtencion()
+    {
+        try {
+            $data = $this->service->reporteCitaAtencion();
+            $apiResponse = new ApiResponse($data);
+            return response()->json($apiResponse, $apiResponse->statusCode);
+        } catch (Exception $e) {
+            $apiResponse = new ApiResponse([]);
+            $apiResponse->message = $e->getMessage();
+            $apiResponse->statusCode = 500;
+            return response()->json($apiResponse, $apiResponse->statusCode);
+        }
+    }
+
+
 }

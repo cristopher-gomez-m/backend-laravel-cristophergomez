@@ -45,17 +45,23 @@ Backend para la gestión de citas de una peluquería, desarrollado con **Laravel
 - Campos: `id`, `cita_id`, `atencion_id`, auditoría, `status`  
 - Relación con `Cita` y `Atencion`
 
+### Log (`Log`)
+- Campos: `entity`, `date`, `description`
 ---
 
 ## ⚙️ Funcionalidades
 
-1. **Usuarios:** Login y auditoría.  
+1. **Personas:** Login y auditoría.  
 2. **Clientes:** CRUD con validaciones y borrado lógico.  
 3. **Atenciones:** CRUD con precios y auditoría.  
 4. **Citas:** CRUD con relación a clientes y detalles de atenciones:
    - Agregar múltiples atenciones por cita (`detalleNuevo` y `detalleEliminar`)  
    - Auditoría de cambios y borrado lógico  
 
+5. **📄 Reportes en PDF (nueva funcionalidad)**
+   - Generación de reportes de **Citas, Clientes y Detalles de Atenciones**.
+   - Renderizado con **Blade** y exportación mediante **DOMPDF**.
+   - Diseño con estilo profesional y formato responsive para PDF.
 ---
 
 ## 🗂 Estructura de carpetas
@@ -66,6 +72,7 @@ backend-laravel/
 │  ├─ Models/
 │  │  ├─ User.php
 │  │  ├─ Cliente.php
+│  │  ├─ Person.php
 │  │  ├─ Atencion.php
 │  │  ├─ Cita.php
 │  │  └─ CitaDetalle.php

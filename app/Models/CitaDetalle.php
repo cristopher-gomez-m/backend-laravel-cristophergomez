@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CitaDetalle extends Model
 {
-    protected $table = 'cita-detalle';
+    protected $table = 'cita_detalle';
     public $timestamps = false;
 
     protected $fillable = [

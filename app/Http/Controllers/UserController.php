@@ -18,8 +18,29 @@ class UserController
     {
         try {
             $credentials = $request->only('email', 'password');
-            $credentials['status'] = 'A';
             $data = $this->userService->login($credentials);
+            if ($data['is_logged'] == true) {
+                $apiResponse = new ApiResponse($data['data']);
+                return response()->json($apiResponse, $apiResponse->statusCode);
+            } else {
+                $apiResponse = new ApiResponse([]);
+                $apiResponse->message = 'Credenciales no válidas';
+                $apiResponse->statusCode = 401;
+                return Response()->json($apiResponse, $apiResponse->statusCode);
+            }
+        } catch (Exception $e) {
+            $apiResponse = new ApiResponse([]);
+            $apiResponse->message = $e->getMessage();
+            $apiResponse->statusCode = 500;
+            return Response()->json($apiResponse, $apiResponse->statusCode);
+        }
+    }
+
+    public function loginMovil(Request $request)
+    {
+        try {
+            $credentials = $request->only('document', 'email', 'password');
+            $data = $this->userService->loginMovil($credentials);
             if ($data['is_logged'] == true) {
                 $apiResponse = new ApiResponse($data['data']);
                 return response()->json($apiResponse, $apiResponse->statusCode);
